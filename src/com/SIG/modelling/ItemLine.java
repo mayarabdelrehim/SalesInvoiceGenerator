@@ -4,7 +4,7 @@ package com.SIG.modelling;
 
 public class ItemLine {
     
-    private int Number;
+    
     private String Item;
     private Double payment;
     private int QTY;
@@ -13,15 +13,15 @@ public class ItemLine {
     public ItemLine() {
     }
 
-    public ItemLine(int Number, String Item, Double payment, int QTY) {
-        this.Number = Number;
+    public ItemLine(String Item, Double payment, int QTY) {
+       // this.Number = Number;
         this.Item = Item;
         this.payment = payment;
         this.QTY = QTY;   
     }
 
-    public ItemLine(int Number, String Item, Double payment, int QTY, SalesInvoice invoice) {
-        this.Number = Number;
+    public ItemLine( String Item, Double payment, int QTY, SalesInvoice invoice) {
+       // this.Number = Number;
         this.Item = Item;
         this.payment = payment;
         this.QTY = QTY;
@@ -45,13 +45,7 @@ public class ItemLine {
         this.QTY = QTY;
     }
 
-    public int getNumber() {
-        return Number;
-    }
 
-    public void setNumber(int Number) {
-        this.Number = Number;
-    }
 
     public String getItem() {
         return Item;
@@ -71,11 +65,17 @@ public class ItemLine {
 
     @Override
     public String toString() {
-        return "ItemLine{" + "Number=" + Number + ", Item=" + Item + ", payment=" + payment + ", QTY=" + QTY + '}';
+        return "ItemLine{" + "Number=" + invoice.getNumber() + ", Item=" + Item + ", payment=" + payment + ", QTY=" + QTY + '}';
+    }
+
+    public SalesInvoice getInvoice() {
+        return invoice;
     }
     
     
-    
+  public String getAsCSV(){
+       return invoice.getNumber() + "," + Item + "," + payment + "," + QTY;
+   }  
     
     
 }

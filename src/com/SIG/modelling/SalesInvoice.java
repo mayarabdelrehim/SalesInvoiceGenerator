@@ -82,7 +82,9 @@ public class SalesInvoice {
     
     
 
-   
+   public String getAsCSV(){
+       return Number + "," + Date + "," +Client;
+   }
     
 
   
