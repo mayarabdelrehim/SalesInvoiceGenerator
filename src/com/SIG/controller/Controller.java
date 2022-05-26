@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -152,6 +153,7 @@ public class Controller implements ActionListener, ListSelectionListener {
             //2,13-10-2021,Saleh
            ArrayList<SalesInvoice> invoicesArray = new ArrayList<>();
            for (String headerline : headerLines){
+               try {
                String[] headercomponets = headerline.split(",");
                int salesinvoiceno = Integer.parseInt(headercomponets[0]);
                String salesinvoicedate = headercomponets[1];
@@ -159,6 +161,10 @@ public class Controller implements ActionListener, ListSelectionListener {
                
                SalesInvoice salesinvoice = new SalesInvoice(salesinvoiceno, salesinvoicedate, clientname);
                invoicesArray.add(salesinvoice);
+               } catch (Exception ex){
+                   ex.printStackTrace();
+                   JOptionPane.showMessageDialog(frame, "Wrong File Format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
                }
            System.out.println("Sales Invoice Check Point");
            
@@ -169,6 +175,7 @@ public class Controller implements ActionListener, ListSelectionListener {
                List<String> lineLines = Files.readAllLines(linepath);
                System.out.println("Item Lines have been read !");
                for (String lineLine : lineLines){
+                   try {
                    String[] linecomponets = lineLine.split(",");
                    int salesinvoiceno = Integer.parseInt(linecomponets[0]);
                    String itemNumber = linecomponets[1];
@@ -183,6 +190,9 @@ public class Controller implements ActionListener, ListSelectionListener {
                    }
                    ItemLine itemline = new ItemLine(itemNumber, itempayment, QTY, inv);
                    inv.getLines().add(itemline);
+                   } catch (Exception ex){
+                   ex.printStackTrace();
+                   JOptionPane.showMessageDialog(frame, "Wrong File Format", "Error", JOptionPane.ERROR_MESSAGE);
                   }
                 System.out.println("Item Lines check Point");
                 }
@@ -193,15 +203,13 @@ public class Controller implements ActionListener, ListSelectionListener {
           frame.getSalesinvoicetable().setModel(salesInvoiceTableModel);
           frame.getSalesInvoiceTableModel().fireTableDataChanged();
             }
-        } catch (IOException ex){
+           }
+        } catch (Exception ex){
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Wrong File Format", "Error", JOptionPane.ERROR_MESSAGE);
             }
-           
-
-    }{
-    
-}
-    
+        }
+         
    
     private void savedata() {
         ArrayList<SalesInvoice>salesInvoices = frame.getInvoices();
@@ -250,15 +258,29 @@ public class Controller implements ActionListener, ListSelectionListener {
     String date = salesInvoiceDialog.getInvDateField().getText();
      String customer = salesInvoiceDialog.getCustNameField().getText();
      int number = frame.getNextInvoiceNumber();
-     
-     SalesInvoice salesInvoice = new SalesInvoice(number, date, customer);
-     frame.getInvoices().add(salesInvoice);
-     frame.getSalesInvoiceTableModel().fireTableDataChanged();
-    salesInvoiceDialog.setVisible(false);
-    salesInvoiceDialog.dispose();
-    salesInvoiceDialog = null;
-        
-       
+     // date validation
+     try {
+         String [] dateFormatParted = date.split("-");
+         if (dateFormatParted.length <3) {
+             JOptionPane.showMessageDialog(frame, "Wrong date format","Error",JOptionPane.ERROR_MESSAGE);
+         } else {
+             int day = Integer.parseInt(dateFormatParted[0]);
+                int month = Integer.parseInt(dateFormatParted[1]);
+                int year = Integer.parseInt(dateFormatParted[2]);
+                if (day > 31 || month > 12) {
+                   JOptionPane.showMessageDialog(frame, "Wrong date format","Error",JOptionPane.ERROR_MESSAGE);
+                }else{
+                SalesInvoice salesInvoice = new SalesInvoice(number, date, customer);
+                frame.getInvoices().add(salesInvoice);
+                frame.getSalesInvoiceTableModel().fireTableDataChanged();
+                salesInvoiceDialog.setVisible(false);
+                salesInvoiceDialog.dispose();
+                salesInvoiceDialog = null;
+                }
+         }
+         }catch (Exception ex){
+        JOptionPane.showMessageDialog(frame, "Wrong date format","Error",JOptionPane.ERROR_MESSAGE);
+                }
     }
 
     private void createSalesInvoiceCancel() {
